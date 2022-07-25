@@ -1,9 +1,16 @@
-import dotenv from 'dotenv'
 import axios from 'axios';
-
-dotenv.config()
-
-export const getRequest = async () => await axios.get(process.env.REACT_APP_API_URL,
+import { API_URL, API_KEY } from '../config';
+export const getRequest = async () => {
+  console.log(API_URL, API_KEY)
+  const res = await axios.get(API_URL,
   {headers: {
-    'x-api-key': process.env.REACT_APP_API_KEY
-  }})
+    'x-api-key': API_KEY
+  }}).then(res => { 
+    const data = res.data
+    return data
+  })
+  console.log('res', res)
+  return res
+}
+
+  // console.log(API_URL, API_KEY)

@@ -1,27 +1,48 @@
 import './App.css';
 import {useEffect, useState} from 'react';
-import CatsProvider from './context/CatsContext';
 import Card from './Components/Card';
 import Buttons from './Components/Buttons';
 
+import { useCatContext } from './context/CatsContext';
+
 function App() {
-  const [data, setData] = useState([]);
-  const API_URL = `https://api.thecatapi.com/v1/images/search`
-  const API_KEY = 'ce431d92-c6b4-4f93-80dc-1af3e40bc290'
-  const history = []
+  const [catHistory, setCatHistory] = useState([]);
+
+  const {
+    data, getData, setData
+  } = useCatContext()
+
+
+  const addHistory = () => {
+    setCatHistory(prevState => [...prevState, ...data])
+
+  }
+
+  const getPreviousCat = () => {
+    console.log('cathistorylength', catHistory.length)
+    console.log('CAThistory', catHistory)
+    const previousCat = catHistory[catHistory.length - 1]
+    setData([previousCat])
+    console.log('previousCat', previousCat)
+    return previousCat
+  }
+
 
   useEffect(() => {
-    
-  }, []);
+    console.log('cathistory', catHistory)
+    localStorage.setItem("catHistory", catHistory);
+  }, [catHistory])
 
-  history.push(data)
-  console.log('history', history)
+  useEffect(() => {
+    getData()
+  },[])
+
 return (
-    <CatsProvider>
+  <>
     {data.map(item => (
-      <Card img={item} key={item.id}/>))}
-    <Buttons />
-    </CatsProvider>
+      <Card {...item} key={item.id}/>))}
+    <Buttons addHistory={addHistory} getPreviousCat={getPreviousCat}/>
+  </>
   );
 }
 
